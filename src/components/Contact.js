@@ -1,11 +1,3 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGithub,
-  faLinkedin,
-  faSquareXTwitter,
-} from "@fortawesome/free-brands-svg-icons"; // Import icons
-
 export default function Contact() {
   // State for form submission success
   const [formSubmitted, setFormSubmitted] = React.useState(false);
@@ -74,8 +66,8 @@ export default function Contact() {
           <form
             name="contact"
             method="POST"
-            data-netlify="true" // Netlify handles the form submission
-            onSubmit={() => setFormSubmitted(true)} // Set form submission state
+            data-netlify="true"
+            onSubmit={() => setFormSubmitted(true)} // Show the success message
             className="max-w-2xl mx-auto p-8 bg-slate-800 rounded-lg w-full"
           >
             {/* Hidden Input for Netlify */}
