@@ -11,7 +11,7 @@ export default function Contact() {
         {/* Simple Contact Form */}
         <form
           name="contact"
-          method="POST"
+          method="post"
           data-netlify="true" // Enable Netlify form handling
           className="max-w-2xl mx-auto p-8 bg-slate-800 rounded-lg w-full"
         >
