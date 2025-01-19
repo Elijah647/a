@@ -10,15 +10,6 @@ export default function Contact() {
   // State for form submission success
   const [formSubmitted, setFormSubmitted] = React.useState(false);
 
-  // Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.target;
-
-    // Submit form data to Netlify (no need for manual fetch)
-    setFormSubmitted(true);
-  };
-
   // Show success message if form is submitted
   if (formSubmitted) {
     return (
@@ -84,7 +75,7 @@ export default function Contact() {
             name="contact"
             method="POST"
             data-netlify="true" // Netlify handles the form submission
-            onSubmit={handleSubmit}
+            onSubmit={() => setFormSubmitted(true)} // Set form submission state
             className="max-w-2xl mx-auto p-8 bg-slate-800 rounded-lg w-full"
           >
             {/* Hidden Input for Netlify */}
