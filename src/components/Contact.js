@@ -1,21 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGithub,
   faLinkedin,
   faSquareXTwitter,
 } from "@fortawesome/free-brands-svg-icons"; // Import icons
-import { useForm, ValidationError } from "@formspree/react"; // Import Formspree React
 
 export default function Contact() {
-  // Use Formspree's useForm hook
-  const [state, handleSubmit, reset] = useForm("movvyedl");
+  const [formState, setFormState] = useState({
+    submitted: false,
+    error: false,
+  });
 
-  // Handle form state after submission
-  if (state.succeeded) {
-    setTimeout(() => {
-      reset(); // Reset the form after successful submission
-    }, 3000); // Optionally delay resetting to allow success message to show
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.target;
+
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(new FormData(form)).toString(),
+      });
+
+      if (response.ok) {
+        setFormState({ submitted: true, error: false });
+        form.reset(); // Reset the form after submission
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch (error) {
+      setFormState({ submitted: false, error: true });
+    }
+  };
+
+  if (formState.submitted) {
     return (
       <p className="text-green-300 text-center lg:text-2xl p-16 lg:p-32">
         Thanks for your message! I will get back to you soon.
@@ -78,8 +97,11 @@ export default function Contact() {
           {/* Contact Form */}
           <form
             onSubmit={handleSubmit}
-            className="max-w-2xl mx-auto p-8 bg-slate-800 rounded-lg  w-full"
+            data-netlify="true"
+            name="contact"
+            className="max-w-2xl mx-auto p-8 bg-slate-800 rounded-lg w-full"
           >
+            <input type="hidden" name="form-name" value="contact" />
             <div className="mb-4">
               <label htmlFor="name" className="block text-white font-medium">
                 Name
@@ -103,12 +125,6 @@ export default function Contact() {
                 required
                 className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {/* Validation error message */}
-              <ValidationError
-                prefix="Email"
-                field="email"
-                errors={state.errors}
-              />
             </div>
             <div className="mb-4">
               <label htmlFor="message" className="block text-white font-medium">
@@ -117,26 +133,19 @@ export default function Contact() {
               <textarea
                 id="message"
                 name="message"
-                rows="6" // Makes the text area longer
+                rows="6"
                 required
                 className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               ></textarea>
-              {/* Validation error message */}
-              <ValidationError
-                prefix="Message"
-                field="message"
-                errors={state.errors}
-              />
             </div>
             <button
               type="submit"
-              className={`w-full py-3 px-6 text-white font-semibold rounded-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${state.succeeded ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
-              disabled={state.submitting}
+              className={`w-full py-3 px-6 text-white font-semibold rounded-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${formState.submitted ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
             >
-              {state.succeeded
+              {formState.submitted
                 ? "Thank You!"
-                : state.submitting
-                  ? "Sending..."
+                : formState.error
+                  ? "Try Again"
                   : "Send Message"}
             </button>
           </form>
