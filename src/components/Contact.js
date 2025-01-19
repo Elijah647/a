@@ -4,7 +4,7 @@ export default function Contact() {
   return (
     <>
       <h2>Contact Form</h2>
-      <form method="post" name="Contact Form">
+      <form method="post" name="Contact Form" data-netlify="true">
         <p>
           <label for="name">Name:</label>
           <input type="text" name="name" id="name" />
