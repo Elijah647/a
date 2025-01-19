@@ -1,3 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faGithub,
+  faLinkedin,
+  faSquareXTwitter,
+} from "@fortawesome/free-brands-svg-icons"; // Import icons
+
 export default function Contact() {
   // State for form submission success
   const [formSubmitted, setFormSubmitted] = React.useState(false);
