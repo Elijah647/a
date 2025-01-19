@@ -15,14 +15,8 @@ export default function Contact() {
     event.preventDefault();
     const form = event.target;
 
-    // Submit form data to Netlify
-    fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(new FormData(form)).toString(),
-    })
-      .then(() => setFormSubmitted(true))
-      .catch((error) => alert("Submission failed. Please try again later."));
+    // Submit form data to Netlify (no need for manual fetch)
+    setFormSubmitted(true);
   };
 
   // Show success message if form is submitted
@@ -89,7 +83,7 @@ export default function Contact() {
           <form
             name="contact"
             method="POST"
-            netlify
+            data-netlify="true" // Netlify handles the form submission
             onSubmit={handleSubmit}
             className="max-w-2xl mx-auto p-8 bg-slate-800 rounded-lg w-full"
           >
