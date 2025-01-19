@@ -89,7 +89,7 @@ export default function Contact() {
           <form
             name="contact"
             method="POST"
-            data-netlify="true"
+            netlify
             onSubmit={handleSubmit}
             className="max-w-2xl mx-auto p-8 bg-slate-800 rounded-lg w-full"
           >
