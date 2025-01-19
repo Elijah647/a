@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGithub,
@@ -7,34 +7,26 @@ import {
 } from "@fortawesome/free-brands-svg-icons"; // Import icons
 
 export default function Contact() {
-  const [formState, setFormState] = useState({
-    submitted: false,
-    error: false,
-  });
+  // State for form submission success
+  const [formSubmitted, setFormSubmitted] = React.useState(false);
 
-  const handleSubmit = async (event) => {
+  // Handle form submission
+  const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
 
-    try {
-      const response = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(new FormData(form)).toString(),
-      });
-
-      if (response.ok) {
-        setFormState({ submitted: true, error: false });
-        form.reset(); // Reset the form after submission
-      } else {
-        throw new Error("Submission failed");
-      }
-    } catch (error) {
-      setFormState({ submitted: false, error: true });
-    }
+    // Submit form data to Netlify
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(new FormData(form)).toString(),
+    })
+      .then(() => setFormSubmitted(true))
+      .catch((error) => alert("Submission failed. Please try again later."));
   };
 
-  if (formState.submitted) {
+  // Show success message if form is submitted
+  if (formSubmitted) {
     return (
       <p className="text-green-300 text-center lg:text-2xl p-16 lg:p-32">
         Thanks for your message! I will get back to you soon.
@@ -56,7 +48,6 @@ export default function Contact() {
               to hear from you and discuss how we can collaborate or address any
               questions you may have.
             </p>
-            {/* Social Media Icons */}
             <div className="mt-5 flex justify-center space-x-6 md:mt-12 md:gap-5">
               <a
                 href="https://www.linkedin.com/in/elijah-hwang-7a55b4202/"
@@ -96,11 +87,13 @@ export default function Contact() {
 
           {/* Contact Form */}
           <form
-            onSubmit={handleSubmit}
-            data-netlify="true"
             name="contact"
+            method="POST"
+            data-netlify="true"
+            onSubmit={handleSubmit}
             className="max-w-2xl mx-auto p-8 bg-slate-800 rounded-lg w-full"
           >
+            {/* Hidden Input for Netlify */}
             <input type="hidden" name="form-name" value="contact" />
             <div className="mb-4">
               <label htmlFor="name" className="block text-white font-medium">
@@ -140,13 +133,9 @@ export default function Contact() {
             </div>
             <button
               type="submit"
-              className={`w-full py-3 px-6 text-white font-semibold rounded-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${formState.submitted ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
+              className="w-full py-3 px-6 text-white font-semibold rounded-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-600 hover:bg-blue-700"
             >
-              {formState.submitted
-                ? "Thank You!"
-                : formState.error
-                  ? "Try Again"
-                  : "Send Message"}
+              Send Message
             </button>
           </form>
         </div>
