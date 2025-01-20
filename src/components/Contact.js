@@ -7,15 +7,14 @@ import {
 } from "@fortawesome/free-brands-svg-icons"; // Import icons
 
 export default function Contact() {
-  // Manage form data
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
+  const [status, setStatus] = useState(null); // Form submission status
 
-  const [status, setStatus] = useState(null); // To store form submission status
-
+  // Handle form data change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -24,30 +23,34 @@ export default function Contact() {
     }));
   };
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Set status to "loading" while waiting for the form to submit
+    // Set the form status to loading
     setStatus("loading");
 
-    // Form submission to Netlify
+    // Fetch request to submit the form to Netlify
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        "form-name": "contact", // The form name Netlify will use
+        "form-name": "contact", // Netlify form name
         ...formData,
       }).toString(),
     })
       .then(() => {
-        // Simulate a delay before resetting the form and showing the success message
+        // Set the status to success after submission
+        setStatus("success");
+
+        // Reset the form data after a delay
         setTimeout(() => {
-          setStatus("success"); // On success, show success message
-          setFormData({ name: "", email: "", message: "" }); // Clear form data
-        }, 3000); // Delay of 3 seconds to show the success message
+          setFormData({ name: "", email: "", message: "" }); // Reset form
+          setStatus(null); // Reset status
+        }, 3000); // 3 seconds delay to allow the success message to show
       })
       .catch(() => {
-        setStatus("error"); // On error, show error message
+        setStatus("error"); // Handle submission error
       });
   };
 
@@ -105,16 +108,16 @@ export default function Contact() {
 
           {/* Contact Form */}
           <form
-            name="contact" // This is the form name
-            method="POST" // POST method for form submission
+            onSubmit={handleSubmit}
+            name="contact" // Name for Netlify form handling
+            method="POST" // Form submission method
             data-netlify="true" // Enable Netlify form handling
-            onSubmit={handleSubmit} // Handle form submit
             className="max-w-2xl mx-auto p-8 bg-slate-800 rounded-lg w-full"
           >
-            {/* Hidden input to tell Netlify the form name */}
+            {/* Hidden input for Netlify */}
             <input type="hidden" name="form-name" value="contact" />
 
-            {/* Success/Error message */}
+            {/* Success/Error Message */}
             {status === "success" && (
               <p className="text-green-300 text-center lg:text-2xl p-16 lg:p-32">
                 Thanks for your message! I will get back to you soon.
@@ -135,9 +138,9 @@ export default function Contact() {
                 type="text"
                 id="name"
                 name="name"
+                required
                 value={formData.name}
                 onChange={handleChange}
-                required
                 className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -151,9 +154,9 @@ export default function Contact() {
                 type="email"
                 id="email"
                 name="email"
+                required
                 value={formData.email}
                 onChange={handleChange}
-                required
                 className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -167,9 +170,9 @@ export default function Contact() {
                 id="message"
                 name="message"
                 rows="6"
+                required
                 value={formData.message}
                 onChange={handleChange}
-                required
                 className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               ></textarea>
             </div>
@@ -185,7 +188,11 @@ export default function Contact() {
             {/* Submit Button */}
             <button
               type="submit"
-              className={`w-full py-3 px-6 text-white font-semibold rounded-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${status === "success" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
+              className={`w-full py-3 px-6 text-white font-semibold rounded-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                status === "success"
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
               disabled={status === "loading"}
             >
               {status === "success"
